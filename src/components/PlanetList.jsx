@@ -1,17 +1,46 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 import PlanetTable from './PlanetTable';
 
 function PlanetList() {
+  const [localFilter, setLocalFilter] = useState({
+    column: 'population',
+    comparison: 'maior que',
+    value: 0,
+  });
+
   const {
     filterByName,
     handleChange,
-    planetList,
+    // planetList,
     filterByNumericValues,
     setFilterByNumericValues,
     planetListFiltered,
     setPlanetListFiltered,
   } = useContext(PlanetsContext);
+  useEffect(() => {
+    filterByNumericValues.forEach((criterion) => {
+      console.log(filterByNumericValues);
+      setPlanetListFiltered((prevState) => prevState.filter((planet) => {
+        if (criterion.comparison === 'maior que') {
+          return Number(
+            planet[criterion.column],
+          ) > criterion.value;
+        } if (criterion.comparison === 'menor que') {
+          return Number(
+            planet[criterion.column],
+          ) < criterion.value;
+        }
+        return planet[criterion.column]
+          === criterion.value;
+      }));
+    });
+  }, [filterByNumericValues]);
+
+  const handleClick = () => {
+    console.log(localFilter);
+    setFilterByNumericValues((prevState) => [...prevState, localFilter]);
+  };
   return (
     <div>
       <section>
@@ -31,8 +60,8 @@ function PlanetList() {
             name="numericFilterSelect"
             data-testid="column-filter"
             onChange={
-              (event) => setFilterByNumericValues({
-                ...filterByNumericValues, column: event.target.value })
+              (event) => setLocalFilter({
+                ...localFilter, column: event.target.value })
             }
           >
             <option value="population">population</option>
@@ -48,8 +77,8 @@ function PlanetList() {
             name="comparisonFilterSelect"
             data-testid="comparison-filter"
             onChange={
-              (event) => setFilterByNumericValues({
-                ...filterByNumericValues, comparison: event.target.value })
+              (event) => setLocalFilter({
+                ...localFilter, comparison: event.target.value })
             }
           >
             <option value="maior que">maior que</option>
@@ -62,30 +91,17 @@ function PlanetList() {
             type="text"
             data-testid="value-filter"
             name="value"
-            value={ filterByNumericValues.value }
+            value={ localFilter.value }
             onChange={
-              (event) => setFilterByNumericValues({
-                ...filterByNumericValues, value: event.target.value })
+              (event) => setLocalFilter({
+                ...localFilter, value: event.target.value })
             }
           />
         </label>
         <button
           type="button"
           data-testid="button-filter"
-          onClick={ () => setPlanetListFiltered(
-            planetList.filter((planet) => {
-              if (filterByNumericValues.comparison === 'maior que') {
-                return Number(
-                  planet[filterByNumericValues.column],
-                ) > filterByNumericValues.value;
-              } if (filterByNumericValues.comparison === 'menor que') {
-                return Number(
-                  planet[filterByNumericValues.column],
-                ) < filterByNumericValues.value;
-              }
-              return planet[filterByNumericValues.column] === filterByNumericValues.value;
-            }),
-          ) }
+          onClick={ handleClick }
         >
           FILTRAR
 
