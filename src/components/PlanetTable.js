@@ -8,13 +8,13 @@ function PlanetTable({ planetList }) {
         {planetList && planetList.map(
           ({
             name,
-            rotation_period,
-            orbital_period,
+            rotation_period: RotationPeriod,
+            orbital_period: OrbitalPeriod,
             diameter,
             climate,
             gravity,
             terrain,
-            surface_water,
+            surface_water: SurfaceWater,
             population,
             films,
             created,
@@ -23,13 +23,13 @@ function PlanetTable({ planetList }) {
           }) => (
             <tr key={ name }>
               <td>{name}</td>
-              <td>{rotation_period}</td>
-              <td>{orbital_period}</td>
+              <td>{RotationPeriod}</td>
+              <td>{OrbitalPeriod}</td>
               <td>{diameter}</td>
               <td>{climate}</td>
               <td>{gravity}</td>
               <td>{terrain}</td>
-              <td>{surface_water}</td>
+              <td>{SurfaceWater}</td>
               <td>{population}</td>
               <td>{films}</td>
               <td>{created}</td>
