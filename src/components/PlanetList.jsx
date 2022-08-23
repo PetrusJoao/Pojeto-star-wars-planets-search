@@ -8,7 +8,6 @@ function PlanetList() {
     comparison: 'maior que',
     value: 0,
   });
-
   const {
     filterByName,
     handleChange,
@@ -18,11 +17,6 @@ function PlanetList() {
     setPlanetListFiltered,
     categories,
   } = useContext(PlanetsContext);
-
-  const options = ['population', 'orbital_period',
-    'diameter', 'rotation_period', 'surface_water'];
-
-  const optionSelected = filterByNumericValues.map(({ column }) => column);
 
   useEffect(() => {
     filterByNumericValues.forEach((criterion) => {
@@ -43,8 +37,18 @@ function PlanetList() {
     });
   }, [filterByNumericValues]);
 
+  const options = ['population', 'orbital_period',
+    'diameter', 'rotation_period', 'surface_water'];
+
+  const optionSelected = filterByNumericValues.map(({ column }) => column);
+
   const handleClick = () => {
     // console.log(localFilter);
+    setLocalFilter({
+      column: options.filter((category) => !optionSelected.includes(category))[0],
+      comparison: 'maior que',
+      value: 0,
+    });
     setFilterByNumericValues((prevState) => [...prevState, localFilter]);
   };
   return (
