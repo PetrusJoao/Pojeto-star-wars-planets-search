@@ -8,12 +8,18 @@ function PlanetsProvider({ children }) {
   const [filterByName, setFilterByName] = useState('');
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
   const [planetListFiltered, setPlanetListFiltered] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const getPlanets = async () => {
       const { results } = await fetch(endpoint).then((response) => response.json());
+      const categoriesWithoutResidents = results.map((planet) => {
+        delete planet.residents;
+        return planet;
+      });
       setPlanetList(results);
       setPlanetListFiltered(results);
+      setCategories(Object.keys(categoriesWithoutResidents[0]));
     };
     getPlanets();
   }, []);
@@ -30,6 +36,7 @@ function PlanetsProvider({ children }) {
     setFilterByNumericValues,
     planetListFiltered,
     setPlanetListFiltered,
+    categories,
   };
   return (
     <PlanetsContext.Provider value={ values }>

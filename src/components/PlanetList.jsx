@@ -12,12 +12,18 @@ function PlanetList() {
   const {
     filterByName,
     handleChange,
-    // planetList,
     filterByNumericValues,
     setFilterByNumericValues,
     planetListFiltered,
     setPlanetListFiltered,
+    categories,
   } = useContext(PlanetsContext);
+
+  const options = ['population', 'orbital_period',
+    'diameter', 'rotation_period', 'surface_water'];
+
+  const optionSelected = filterByNumericValues.map(({ column }) => column);
+
   useEffect(() => {
     filterByNumericValues.forEach((criterion) => {
       console.log(filterByNumericValues);
@@ -38,7 +44,7 @@ function PlanetList() {
   }, [filterByNumericValues]);
 
   const handleClick = () => {
-    console.log(localFilter);
+    // console.log(localFilter);
     setFilterByNumericValues((prevState) => [...prevState, localFilter]);
   };
   return (
@@ -64,11 +70,8 @@ function PlanetList() {
                 ...localFilter, column: event.target.value })
             }
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            { options.filter((category) => !optionSelected.includes(category))
+              .map((category) => <option key={ category }>{ category }</option>) }
           </select>
         </label>
         <label htmlFor="comparisonFilterSelect">
@@ -110,19 +113,7 @@ function PlanetList() {
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surfce water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Created</th>
-            <th>Edited</th>
-            <th>URL</th>
+            { categories.map((category, index) => <th key={ index }>{ category }</th>) }
           </tr>
         </thead>
         <PlanetTable
