@@ -4,7 +4,7 @@ import PlanetsContext from './PlanetsContext';
 
 function PlanetsProvider({ children }) {
   const endpoint = 'https://swapi-trybe.herokuapp.com/api/planets/';
-  const [planetList, setPlanetList] = useState();
+  const [planetList, setPlanetList] = useState([]);
   const [filterByName, setFilterByName] = useState('');
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
   const [planetListFiltered, setPlanetListFiltered] = useState([]);
@@ -27,6 +27,31 @@ function PlanetsProvider({ children }) {
   const handleChange = ({ target }) => {
     setFilterByName(target.value);
   };
+
+  useEffect(() => {
+    console.log(filterByNumericValues, 'filterByNumericValues');
+    console.log(planetListFiltered, 'planetListFiltered');
+    console.log(planetList, 'planetList');
+    const func = () => {
+      setPlanetListFiltered(planetList);
+      filterByNumericValues.forEach((criterion) => {
+        setPlanetListFiltered((prevState) => prevState.filter((planet) => {
+          if (criterion.comparison === 'maior que') {
+            return Number(
+              planet[criterion.column],
+            ) > criterion.value;
+          } if (criterion.comparison === 'menor que') {
+            return Number(
+              planet[criterion.column],
+            ) < criterion.value;
+          }
+          return planet[criterion.column]
+            === criterion.value;
+        }));
+      });
+    };
+    func();
+  }, [filterByNumericValues]);
 
   const values = {
     planetList,

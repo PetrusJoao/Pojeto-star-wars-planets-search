@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState/* , useEffect */ } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 import PlanetTable from './PlanetTable';
 
@@ -14,28 +14,10 @@ function PlanetList() {
     filterByNumericValues,
     setFilterByNumericValues,
     planetListFiltered,
-    setPlanetListFiltered,
+    // setPlanetListFiltered,
     categories,
+    // planetList,
   } = useContext(PlanetsContext);
-
-  useEffect(() => {
-    filterByNumericValues.forEach((criterion) => {
-      console.log(filterByNumericValues);
-      setPlanetListFiltered((prevState) => prevState.filter((planet) => {
-        if (criterion.comparison === 'maior que') {
-          return Number(
-            planet[criterion.column],
-          ) > criterion.value;
-        } if (criterion.comparison === 'menor que') {
-          return Number(
-            planet[criterion.column],
-          ) < criterion.value;
-        }
-        return planet[criterion.column]
-          === criterion.value;
-      }));
-    });
-  }, [filterByNumericValues]);
 
   const options = ['population', 'orbital_period',
     'diameter', 'rotation_period', 'surface_water'];
@@ -43,7 +25,6 @@ function PlanetList() {
   const optionSelected = filterByNumericValues.map(({ column }) => column);
 
   const handleClick = () => {
-    // console.log(localFilter);
     setLocalFilter({
       column: options.filter((category) => !optionSelected.includes(category))[0],
       comparison: 'maior que',
@@ -51,6 +32,7 @@ function PlanetList() {
     });
     setFilterByNumericValues((prevState) => [...prevState, localFilter]);
   };
+
   return (
     <div>
       <section>
@@ -113,6 +95,31 @@ function PlanetList() {
           FILTRAR
 
         </button>
+        <button
+          type="button"
+          data-testid="button-remove-filters"
+          onClick={ () => { setFilterByNumericValues([]); } }
+        >
+          Remover Filtros
+        </button>
+        <div>
+          { filterByNumericValues.map((criterium) => (
+            <ul data-testid="filter" key={ criterium.column }>
+              <span>{criterium.column}</span>
+              <span>{` / ${criterium.comparison} / `}</span>
+              <span>{criterium.value}</span>
+              <button
+                type="button"
+                onClick={ () => setFilterByNumericValues(
+                  filterByNumericValues.filter(
+                    (filterNum) => filterNum.column !== criterium.column,
+                  ),
+                ) }
+              >
+                X
+              </button>
+            </ul>)) }
+        </div>
       </section>
       <table>
         <thead>
